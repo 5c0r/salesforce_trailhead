@@ -9,13 +9,15 @@ public with sharing class AddPrimaryContact implements Queueable {
     }
 
     public void execute(QueueableContext context) {
-        var accounts = [SELECT Id, Name FROM Account WHERE BillingState = :state LIMIT 200];
+        List<Account> accounts = [SELECT Id, Name FROM Account WHERE BillingState = :state LIMIT 200];
+        List<Contact> contacts = new List<Contact>();
 
         for (Account a : accounts) {
-            var newContact  = contact.clone(false);
-            a.Contacts.add(newContact);
+            Contact newContact  = contact.clone(false,false,false,false);
+            newContact.AccountId = a.Id;
 
-            update a;
+            contacts.add(newContact);
         }
+        insert contacts;
     }
 }

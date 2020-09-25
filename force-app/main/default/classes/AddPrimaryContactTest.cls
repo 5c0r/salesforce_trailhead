@@ -5,14 +5,14 @@ public with sharing class AddPrimaryContactTest {
         List<Account> accts = new List<Account>();
 
         for (Integer i = 0; i < 50; i++) {
-            var acct = new Account(Name = 'Test account' + i);
+            Account acct = new Account(Name = 'Test account' + i);
             acct.BillingState = 'NY';
 
             accts.add(acct);
         }
 
         for (Integer i = 0 ; i < 50; i++) {
-            var acct = new Account(Name ='Test CA Account' + i);
+            Account acct = new Account(Name ='Test CA Account' + i);
             acct.BillingState = 'CA';
 
             accts.add(acct);
@@ -22,9 +22,8 @@ public with sharing class AddPrimaryContactTest {
     }
 
     @IsTest
-    static testmethod void methodName(){
-        Contact primaryContact= new Contact(Name='Primary', LastName='Test');
-        insert primaryContact;
+    static void testAddPrimaryContact(){
+        Contact primaryContact= new Contact(FirstName='Primary', LastName='Test');
 
         AddPrimaryContact updater = new AddPrimaryContact(primaryContact, 'CA');
 
@@ -32,8 +31,7 @@ public with sharing class AddPrimaryContactTest {
         System.enqueueJob(updater);
         Test.stopTest();
 
-        
-        
+        System.assertEquals(50, [SELECT count() FROM Contact WHERE AccountId IN :[SELECT Id FROM Account WHERE BillingState = 'CA']]);
     }
 
 }
