@@ -31,6 +31,11 @@ public with sharing class AddPrimaryContactTest {
         System.enqueueJob(updater);
         Test.stopTest();
 
+        List<Account> accounts = [SELECT Id FROM Account WHERE BillingState = 'CA'];
+        System.assertEquals(accounts.size(), 50);
+        List<Contact> contacts = [SELECT FirstName, LastName FROM Contact];
+        System.assertEquals(contacts.size(), 50);
+
         System.assertEquals(50, [SELECT count() FROM Contact WHERE AccountId IN :[SELECT Id FROM Account WHERE BillingState = 'CA']]);
     }
 
